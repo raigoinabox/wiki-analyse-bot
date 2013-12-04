@@ -5,8 +5,6 @@ from pywikibot.pywikibot import family, config2 as config
 import urllib
 import pywikibot.pywikibot.families.family
 # TestViki family
-# user_config.py:
-# usernames['mywiki']['et'] = 'user'
 class TestvikiFamily(family.Family):
    def __init__(self):
        family.Family.__init__(self)
