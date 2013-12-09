@@ -3,6 +3,7 @@ __author__ = 'raigo'
 import pywikibot
 import analyser
 
+
 class PageModel():
     def __init__(self, page, target=None, html_text=""):
         self.page = page
@@ -37,24 +38,6 @@ class PageModel():
     def __setstate__(self, state):
         self.__dict__.update(state)
         self.page = pywikibot.Page(pywikibot.Link(self.page))
-
-
-#def load_text(page):
-#    """
-#    Loads the text of the given page.
-#    """
-#    try:
-#        # Load the page
-#        text = page.get()
-#    except pywikibot.NoPage:
-#        pywikibot.output(u"Page %s does not exist; skipping."
-#                         % page.title(asLink=True))
-#    except pywikibot.IsRedirectPage:
-#        pywikibot.output(u"Page %s is a redirect; skipping."
-#                         % page.title(asLink=True))
-#    else:
-#        return text
-#    return None
 
 
 def get_len(iterator):

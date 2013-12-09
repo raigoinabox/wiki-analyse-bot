@@ -42,7 +42,7 @@ def train(site, _=None):
         def get_random_page_gen(number):
             page_count = 0
             while page_count < number:
-                gen = pagegenerators.RandomPageGenerator(number=number-page_count, site=site)
+                gen = pagegenerators.RandomPageGenerator(number=number - page_count, site=site)
                 for page in gen:
                     page_count += 1
                     yield page
@@ -134,6 +134,7 @@ def analyse_page(site, rest):
         gen = pagegenerators.PreloadingGenerator(gen)
     else:
         pywikibot.showHelp()
+
 
 if __name__ == "__main__":
     try:
