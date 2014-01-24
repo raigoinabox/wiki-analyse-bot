@@ -59,14 +59,14 @@ def train(site, _=None):
                              u"Mall:Head artiklid")
         for page in gen:
             if page.title() not in not_good_articles:
-                model_list.append(PageModel(page, target=config.Classification.GOOD))
+                model_list.append(PageModel(page, target=analyser.Classification.GOOD))
 
         # Random pages/Bad pages
         good_pages_size = len(model_list)
         gen = get_random_page_gen(good_pages_size)
 
         for page in gen:
-            model_list.append(PageModel(page, target=config.Classification.BAD))
+            model_list.append(PageModel(page, target=analyser.Classification.AVERAGE))
         return model_list
 
     def train_pages(page_list):
@@ -98,22 +98,19 @@ def train(site, _=None):
 
 
 def crawl(site, rest):
-    find_targets = {"good": config.Classification.GOOD,
-                    "bad": config.Classification.BAD}
-
-    find_target = find_targets[rest[0]]
-
     good_pages = []
     for page in site.allpages():
         try:
             model = PageModel(page)
-            if model.target == find_target:
+            if model.target == analyser.Classification.GOOD:
                 good_pages.append(model)
         except pywikibot.PageRelatedError as e:
-            pywikibot.output((e.message + "; skipping.") % page.title(asLink=True))
+            pywikibot.warning((e.message + "; skipping.") % page.title(asLink=True))
 
-    with open("good_pages.pkl", "w") as f:
+    with open("good_pages_svm.pkl", "w") as f:
         pickle.dump(good_pages, f)
+
+    pywikibot.output(str(good_pages))
 
 
 def analyse_page(site, rest):

@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
+TRAINING_DATA_FILE = "train.pkl"
 
-class Classification:
-    GOOD = 1
-    BAD = -1
-
-
-TRAINING_DATA_FILE = "clf.pkl"
+GOOD_PAGES_FILE = "good_pages.pkl"

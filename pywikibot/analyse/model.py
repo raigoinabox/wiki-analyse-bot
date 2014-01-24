@@ -8,23 +8,23 @@ class PageModel():
     def __init__(self, page, target=None, html_text=""):
         self.page = page
         self._target = target
-        #self.images = page.imagelinks()
-        #self.external_links = page.extlinks()
-        #self.version_history = page.getVersionHistory()
-        #self.contributing_users = page.contributingUsers()
-        #self.red_link_count = len(re.findall('<a[^>]+class="new"', html_text))
-
 
     def get_scikit_format(self):
-        return (len(self.page.get()),
-                get_len(self.page.linkedPages()),
-                get_len(self.page.getReferences()))
+        return (1,) + self.get_features()
 
+    def get_features(self):
+        return (len(self.page.get()),
+                get_len(self.page.getReferences()),
+                get_len(self.page.linkedPages()),
+                get_len(self.page.imagelinks()),
+                get_len(self.page.extlinks()),
+                len(self.page.templates()),
+                get_len(self.page.categories()))
 
     @property
     def target(self):
         if self._target is None:
-            self._target = analyser.predict_model(self)
+            self._target = analyser.predict(self)
         return self._target
 
     def __str__(self):

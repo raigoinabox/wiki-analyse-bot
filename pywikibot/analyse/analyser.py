@@ -4,6 +4,11 @@ import numpy as np
 import config
 
 
+class Classification:
+    GOOD = 1
+    AVERAGE = -1
+
+
 class TrainResult:
     def __init__(self, weights, mean, std):
         self.weights = weights
@@ -15,6 +20,9 @@ def predict_list(page_list):
     return (predict(page) for page in page_list)
 
 
+train_result = None
+
+
 def predict(page):
     global train_result
     if train_result is None:
@@ -24,12 +32,12 @@ def predict(page):
     mean = train_result.mean
     std = train_result.std
     weights = train_result.weights
-    x = normalise(np.array([page.get_scikit_format()]), mean, std)
+    x = prepare_x(np.array([page.get_features()]), mean, std)
     result = x.dot(weights.T)
     if result > 0:
-        return 1
+        return Classification.GOOD
     else:
-        return -1
+        return Classification.AVERAGE
 
 
 def train(page_list):
@@ -38,13 +46,13 @@ def train(page_list):
     x = []
     y = []
     for page in page_list:
-        x.append(page.get_scikit_format())
+        x.append(page.get_features())
         y.append(page.target)
 
     numpy_x = np.array(x)
     mean = np.mean(x, axis=0)
     std = np.std(x, axis=0)
-    x_matrix = normalise(numpy_x, mean, std)
+    x_matrix = prepare_x(numpy_x, mean, std)
     y_matrix = np.array(y)
 
     iteration = gradient_descent(x_matrix, y_matrix)
@@ -56,14 +64,18 @@ def train(page_list):
         pickle.dump(train_result, f)
 
 
-def normalise(x, mean, std):
-    subtracted = np.subtract(x, mean)
-    result = np.divide(subtracted, std)
-    return result
+def prepare_x(x, mean, std):
+    def normalise(x, mean, std):
+        subtracted = np.subtract(x, mean)
+        result = np.divide(subtracted, std)
+        return result
+
+    normalised = normalise(x, mean, std)
+    return np.hstack((np.ones((normalised.shape[0], 1)), normalised))
 
 
 def gradient_descent(z, y, w_h=None, eta=0.5, max_iterations=10000, epsilon=0.001):
-    if w_h == None:
+    if w_h is None:
         w_h = np.array([0.0 for i in range(z.shape[1])])
 
     # save a history of the weight vectors into an array
@@ -83,6 +95,8 @@ def gradient_descent(z, y, w_h=None, eta=0.5, max_iterations=10000, epsilon=0.00
 
         if np.linalg.norm(grad_E_in) <= np.linalg.norm(w_h) * epsilon:
             break
+    else:
+        raise Exception("Hit max iterations")
 
     return np.array(w_h_i)
 
