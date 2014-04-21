@@ -29,14 +29,14 @@ def train(site, _=None):
         pickle.dump(train_result, f)
 
 
-def crawl(site, _):
+def find(site, _):
     with open(TRAINING_DATA_FILE) as f:
         train_result = pickle.load(f)
 
     good_pages = []
     for page in site.allpages():
         try:
-            if numberlib.predicted_label(train_result, page) == modellib.GOOD_PAGE:
+            if numberlib.predicted_label(train_result, page) == numberlib.GOOD_PAGE:
                 good_pages.append(page.title())
         except pywikibot.PageRelatedError as e:
             pywikibot.warning((e.message + "; skipping.") % page.title(asLink=True))

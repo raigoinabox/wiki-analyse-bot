@@ -1,15 +1,18 @@
 import numpy
 
-from analyse import tuplelib, numpylib, modellib
+from analyse import tuplelib, numpylib
 
 
 __author__ = 'raigo'
 
+GOOD_PAGE = 1
+AVERAGE_PAGE = -1
+
 
 def predicted_label(train_result, page):
-    return modellib.GOOD_PAGE if numpylib.prepare_x(numpy.array([tuplelib.page_features_(page)]), train_result.mean,
-                                                    train_result.std).dot(
-        train_result.weights.T) > 0 else modellib.AVERAGE_PAGE
+    return GOOD_PAGE if numpylib.prepare_x(numpy.array([tuplelib.page_features_(page)]), train_result.mean,
+                                           train_result.std).dot(
+        train_result.weights.T) > 0 else AVERAGE_PAGE
 
 
 def predictions_wrong(train_result, test_models):

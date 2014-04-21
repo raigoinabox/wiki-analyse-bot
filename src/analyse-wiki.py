@@ -15,9 +15,7 @@ def main(args):
     site.login()
 
     actions = {"train": voidlib.train,
-               "find": voidlib.crawl}
-
-    args = [arg for arg in pywikibot.handleArgs()]
+               "find": voidlib.find}
 
     try:
         actions[args[0]](site, args[1:])
